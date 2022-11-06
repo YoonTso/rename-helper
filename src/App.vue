@@ -11,11 +11,15 @@ const onDrop = (e) => {
 };
 
 const rename = () => {
-    console.log(separator.value);
     window.electronAPI.rename(toRaw(files.value), separator.value);
 };
 
+const restore = () => {
+    window.electronAPI.restore(toRaw(files.value), separator.value);
+};
+
 window.electronAPI.onRename();
+window.electronAPI.onRestore();
 </script>
 
 <template>
@@ -30,7 +34,7 @@ window.electronAPI.onRename();
                 />
             </div>
             <div class="menu-operator">
-                <button class="btn-restore">Restore</button>
+                <button class="btn-restore" @click="restore">Restore</button>
                 <button class="btn-rename" @click="rename">Rename</button>
             </div>
         </div>
