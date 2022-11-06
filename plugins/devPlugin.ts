@@ -4,10 +4,11 @@ export let devPlugin = () => {
         name: "dev-plugin",
         configureServer(server: ViteDevServer) {
             require("esbuild").buildSync({
-                entryPoints: ["./src/main/mainEntry.ts"],
+                entryPoints: ["./src/main/mainEntry.ts", "./src/main/preload.ts"],
                 bundle: true,
                 platform: "node",
-                outfile: "./dist/mainEntry.js",
+                // outfile: "./dist/mainEntry.js",
+                outdir: "dist",
                 external: ["electron"],
             });
             server.httpServer.once("listening", () => {

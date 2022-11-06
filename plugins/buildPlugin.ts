@@ -5,11 +5,12 @@ class BuildObj {
     //编译主进程代码
     buildMain() {
         require("esbuild").buildSync({
-            entryPoints: ["./src/main/mainEntry.ts"],
+            entryPoints: ["./src/main/preload.ts", "./src/main/mainEntry.ts"],
             bundle: true,
             platform: "node",
             minify: true,
-            outfile: "./dist/mainEntry.js",
+            outdir: "dist",
+            // outfile: "./dist/mainEntry.js",
             external: ["electron"],
         });
     }

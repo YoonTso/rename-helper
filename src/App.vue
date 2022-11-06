@@ -1,36 +1,92 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
-import fs from "fs";
-import { ipcRenderer } from "electron";
-import { onMounted } from "vue";
-onMounted(() => {
-    console.log(fs.writeFileSync);
-    console.log(ipcRenderer);
-});
+import { ref, toRaw } from "vue";
+const separator = ref("❤");
+const files = ref<string[]>([]);
+const onDrop = (e) => {
+    console.log("drop....");
+    console.log(e);
+    console.log(e.dataTransfer.files);
+    const dropFiles = Array.from(e.dataTransfer.files).map((item) => item.path);
+    files.value = dropFiles;
+};
+
+const rename = () => {
+    console.log(separator.value);
+    window.electronAPI.rename(toRaw(files.value), separator.value);
+};
+
+window.electronAPI.onRename();
 </script>
 
 <template>
-    <div>
-        <a href="https://vitejs.dev" target="_blank">
-            <img src="/vite.svg" class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://vuejs.org/" target="_blank">
-            <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-        </a>
+    <div class="container">
+        <div class="menu">
+            <div class="menu-separator">
+                <label class="separator-label" for="separator">separator</label>
+                <input
+                    class="separator-input"
+                    type="text"
+                    v-model="separator"
+                />
+            </div>
+            <div class="menu-operator">
+                <button class="btn-restore">Restore</button>
+                <button class="btn-rename" @click="rename">Rename</button>
+            </div>
+        </div>
+        <div class="drop" @drop.prevent="onDrop" @dragover.prevent>
+            <div v-if="files.length > 0">
+                <p v-for="item in files" :key="item">{{ item }}</p>
+            </div>
+            <p v-else>Drop Here.</p>
+        </div>
     </div>
-    <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
-.logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
+.container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
-.logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+
+.menu {
+    display: flex;
+    justify-content: space-between;
 }
-.logo.vue:hover {
-    filter: drop-shadow(0 0 2em #42b883aa);
+
+.menu-separator {
+    display: flex;
+}
+
+.separator-input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
+.menu-operator {
+    display: flex;
+}
+
+.menu-operator button {
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.btn-rename {
+    margin-left: 10px;
+}
+
+.drop {
+    flex-grow: 1;
+    border: 1px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ccc;
+    font-style: italic;
+    margin-top: 15px;
 }
 </style>
