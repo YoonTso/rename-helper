@@ -2,11 +2,10 @@
 import { ref, toRaw } from "vue";
 const separator = ref("❤");
 const files = ref<string[]>([]);
-const onDrop = (e) => {
-    console.log("drop....");
-    console.log(e);
-    console.log(e.dataTransfer.files);
-    const dropFiles = Array.from(e.dataTransfer.files).map((item) => item.path);
+const onDrop = (e: DragEvent) => {
+    const dropFiles = Array.from((e.dataTransfer as DataTransfer).files).map(
+        (item) => item.path
+    );
     files.value = dropFiles;
 };
 
